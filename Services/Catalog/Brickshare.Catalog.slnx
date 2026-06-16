@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Brickshare.Catalog.WebApi/Brickshare.Catalog.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
