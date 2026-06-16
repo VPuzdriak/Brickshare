@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<CreateLegoSetHandler>();
 builder.Services.AddScoped<GetLegoSetHandler>();
 
+builder.Services.AddValidation();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

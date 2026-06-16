@@ -1,5 +1,13 @@
 namespace Brickshare.Catalog.WebApi.Features.GetLegoSet;
 
+public sealed record GetLegoSetResponse(
+    Guid Id,
+    string Name,
+    decimal CatalogPrice,
+    int NumberOfPieces,
+    int AgeRestriction,
+    int AssemblyTimeInDays);
+
 internal static class GetLegoSetEndpoint
 {
     public static IEndpointRouteBuilder MapGetLegoSet(this IEndpointRouteBuilder builder)
@@ -9,17 +17,26 @@ internal static class GetLegoSetEndpoint
                 GetLegoSetHandler handler,
                 CancellationToken ct) =>
             {
-                var legoSet = await handler.QueryAsync(id, ct);
+                LegoSetDto? dto = await handler.QueryAsync(id, ct);
 
-                if (legoSet is null)
+                if (dto is null)
                 {
                     return Results.NotFound();
                 }
 
-                return Results.Ok(legoSet);
+                var response = new GetLegoSetResponse(
+                    dto.Id,
+                    dto.Name,
+                    dto.CatalogPrice,
+                    dto.NumberOfPieces,
+                    dto.AgeRestriction,
+                    dto.AssemblyTimeInDays
+                );
+
+                return Results.Ok(response);
             })
             .WithName("GetLegoSet");
-        
+
         return builder;
     }
 }

@@ -7,8 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
-      <PackageReference Include="Scalar.AspNetCore" Version="2.16.3" />
+        <InternalsVisibleTo Include="$(AssemblyName).Tests.Integration"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.16.3"/>
     </ItemGroup>
 
 </Project>

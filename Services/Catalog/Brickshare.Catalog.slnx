@@ -2,5 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Brickshare.Catalog.WebApi/Brickshare.Catalog.WebApi.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/Brickshare.Catalog.WebApi.Tests.Integration/Brickshare.Catalog.WebApi.Tests.Integration.csproj" />
+  </Folder>
 </Solution>
