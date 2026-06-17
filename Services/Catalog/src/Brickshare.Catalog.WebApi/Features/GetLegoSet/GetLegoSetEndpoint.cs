@@ -3,6 +3,7 @@ namespace Brickshare.Catalog.WebApi.Features.GetLegoSet;
 public sealed record GetLegoSetResponse(
     Guid Id,
     string Name,
+    string Theme,
     decimal CatalogPrice,
     int NumberOfPieces,
     int AgeRestriction,
@@ -27,6 +28,7 @@ internal static class GetLegoSetEndpoint
                 var response = new GetLegoSetResponse(
                     dto.Id,
                     dto.Name,
+                    dto.Theme,
                     dto.CatalogPrice,
                     dto.NumberOfPieces,
                     dto.AgeRestriction,

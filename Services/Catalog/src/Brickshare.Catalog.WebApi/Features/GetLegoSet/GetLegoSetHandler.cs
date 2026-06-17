@@ -3,6 +3,7 @@ namespace Brickshare.Catalog.WebApi.Features.GetLegoSet;
 internal sealed record LegoSetDto(
     Guid Id,
     string Name,
+    string Theme,
     decimal CatalogPrice,
     int NumberOfPieces,
     int AgeRestriction,
@@ -19,6 +20,6 @@ internal sealed class GetLegoSetHandler
             return null;
         }
 
-        return new LegoSetDto(id, "Titanic", 679.99m, 10294, 18, 15);
+        return new LegoSetDto(id, "Titanic", "Icons", 679.99m, 10294, 18, 15);
     }
 }

@@ -34,24 +34,33 @@ public sealed class GetLegoSetScenarios(BrickShareFactory factory) : IClassFixtu
     {
         // Arrange
         var nonExistingLegoSetId = Guid.Empty;
-        
+
         // Act
         var response = await _httpClient.GetAsync($"/lego-sets/{nonExistingLegoSetId}");
-        
+
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
     private async Task<Guid> CreateLegoSetAsync(
         string name = "LEGO Star Wars Millennium Falcon",
+        string theme = "Star Wars",
         decimal catalogPrice = 679.99m,
         int numberOfPieces = 10294,
         int ageRestriction = 18,
         int assemblyTimeInDays = 15)
     {
-        var request = new CreateLegoSetRequest(name, catalogPrice, numberOfPieces, ageRestriction, assemblyTimeInDays);
+        var request = new CreateLegoSetRequest(
+            name,
+            theme,
+            catalogPrice,
+            numberOfPieces,
+            ageRestriction,
+            assemblyTimeInDays);
+
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
         response.EnsureSuccessStatusCode();
+
         return await response.Content.ReadFromJsonAsync<Guid>();
     }
 }

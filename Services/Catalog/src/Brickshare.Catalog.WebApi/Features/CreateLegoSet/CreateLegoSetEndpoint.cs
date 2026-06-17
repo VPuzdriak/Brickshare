@@ -4,6 +4,7 @@ namespace Brickshare.Catalog.WebApi.Features.CreateLegoSet;
 
 public sealed record CreateLegoSetRequest(
     [Required] string Name,
+    [Required] string Theme,
     [Required, Range(10, 2_000)] decimal CatalogPrice,
     [Required, Range(12, 13_000)] int NumberOfPieces,
     [Required, Range(4, 99)] int AgeRestriction,
@@ -20,6 +21,7 @@ internal static class CreateLegoSetEndpoint
             {
                 var command = new CreateLegoSet(
                     createLegoSetRequest.Name,
+                    createLegoSetRequest.Theme,
                     createLegoSetRequest.CatalogPrice,
                     createLegoSetRequest.NumberOfPieces,
                     createLegoSetRequest.AgeRestriction,

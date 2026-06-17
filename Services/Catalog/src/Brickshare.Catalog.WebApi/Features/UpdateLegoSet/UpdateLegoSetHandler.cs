@@ -6,6 +6,7 @@ namespace Brickshare.Catalog.WebApi.Features.UpdateLegoSet;
 internal sealed record UpdateLegoSet(
     Guid Id,
     string Name,
+    string Theme,
     decimal CatalogPrice,
     int NumberOfPieces,
     int AgeRestriction,
@@ -26,6 +27,7 @@ internal sealed class UpdateLegoSetHandler
         var legoSet = new LegoSet
         {
             Guid = command.Id,
+            Theme = command.Theme,
             Name = command.Name,
             CatalogPrice = command.CatalogPrice,
             AgeRestriction = command.AgeRestriction,

@@ -4,6 +4,7 @@ namespace Brickshare.Catalog.WebApi.Features.CreateLegoSet;
 
 internal sealed record CreateLegoSet(
     string Name,
+    string Theme,
     decimal CatalogPrice,
     int NumberOfPieces,
     int AgeRestriction,
@@ -18,6 +19,7 @@ internal sealed class CreateLegoSetHandler
         {
             Guid = Guid.NewGuid(),
             Name = command.Name,
+            Theme = command.Theme,
             CatalogPrice = command.CatalogPrice,
             AgeRestriction = command.AgeRestriction,
             AssemblyTimeInDays = command.AssemblyTimeInDays,

@@ -19,6 +19,7 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         var legoSet = await GetLegoSetAsync(legoSetId);
         var request = new UpdateLegoSetRequest(
             legoSet.Name,
+            legoSet.Theme,
             legoSet.CatalogPrice,
             legoSet.NumberOfPieces,
             legoSet.AgeRestriction,
@@ -40,6 +41,7 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         var nonExistingLegoSetId = Guid.Empty;
         var request = new UpdateLegoSetRequest(
             Name: "LEGO Star Wars Millennium Falcon",
+            Theme: "Star Wars",
             CatalogPrice: 679.99m,
             NumberOfPieces: 10294,
             AgeRestriction: 18,
@@ -54,12 +56,14 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
 
     private async Task<Guid> CreateLegoSetAsync(
         string name = "LEGO Star Wars Millennium Falcon",
+        string theme = "Star Wars",
         decimal catalogPrice = 679.99m,
         int numberOfPieces = 10294,
         int ageRestriction = 18,
         int assemblyTimeInDays = 15)
     {
-        var request = new CreateLegoSetRequest(name, catalogPrice, numberOfPieces, ageRestriction, assemblyTimeInDays);
+        var request = new CreateLegoSetRequest(name, theme, catalogPrice, numberOfPieces, ageRestriction,
+            assemblyTimeInDays);
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<Guid>();
