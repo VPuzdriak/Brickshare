@@ -26,13 +26,14 @@ public sealed class CreateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
         response.EnsureSuccessStatusCode();
 
-        var legoSetId = await response.Content.ReadFromJsonAsync<Guid>();
+        var result = await response.Content.ReadFromJsonAsync<CreateLegoSetResult>();
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        result.ShouldNotBeNull();
         ArgumentNullException.ThrowIfNull(response.Headers.Location);
-        response.Headers.Location.ShouldBe(new Uri(_httpClient.BaseAddress!, $"lego-sets/{legoSetId}"));
-        legoSetId.ShouldNotBe(Guid.Empty);
+        response.Headers.Location.ShouldBe(
+            new Uri(_httpClient.BaseAddress!, $"lego-sets/{result.Id}/{result.ThemeSlug}"));
     }
 
     [Fact]

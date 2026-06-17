@@ -4,6 +4,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>4bdd5190-d27e-488f-b697-7ffeba03a2c4</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +13,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9"/>
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.61.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.3"/>
     </ItemGroup>
 

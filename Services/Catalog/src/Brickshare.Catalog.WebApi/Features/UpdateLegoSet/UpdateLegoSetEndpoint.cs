@@ -14,8 +14,9 @@ internal static class UpdateLegoSetEndpoint
 {
     public static IEndpointRouteBuilder MapUpdateLegoSet(this IEndpointRouteBuilder builder)
     {
-        builder.MapPut("/{id:guid}", async (
-                Guid id,
+        builder.MapPut("/{id}/{themeSlug}", async (
+                string id,
+                string themeSlug,
                 UpdateLegoSetRequest updateLegoSetRequest,
                 UpdateLegoSetHandler handler,
                 CancellationToken ct) =>

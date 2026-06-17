@@ -27,9 +27,13 @@ internal static class CreateLegoSetEndpoint
                     createLegoSetRequest.AgeRestriction,
                     createLegoSetRequest.AssemblyTimeInDays);
 
-                var setId = await handler.HandleAsync(command, ct);
+                var result = await handler.HandleAsync(command, ct);
 
-                return Results.CreatedAtRoute("GetLegoSet", new { id = setId }, setId);
+                return Results.CreatedAtRoute(
+                    "GetLegoSet",
+                    new { id = result.Id, themeSlug = result.ThemeSlug },
+                    result
+                );
             })
             .WithName("CreateLegoSet");
 

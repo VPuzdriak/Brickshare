@@ -1,7 +1,10 @@
+using Brickshare.Catalog.WebApi.Infrastructure;
+using Brickshare.Catalog.WebApi.Infrastructure.Extensions;
+
 namespace Brickshare.Catalog.WebApi.Features.GetLegoSet;
 
 internal sealed record LegoSetDto(
-    Guid Id,
+    string Id,
     string Name,
     string Theme,
     decimal CatalogPrice,
@@ -9,17 +12,34 @@ internal sealed record LegoSetDto(
     int AgeRestriction,
     int AssemblyTimeInDays);
 
-internal sealed class GetLegoSetHandler
+internal sealed record GetLegoSet(string Id, string ThemeSlug);
+
+internal sealed class GetLegoSetHandler(ILegoSetDataStore legoSetDataStore)
 {
-    public async Task<LegoSetDto?> QueryAsync(Guid id, CancellationToken cancellationTokens)
+    public async Task<LegoSetDto?> QueryAsync(GetLegoSet query, CancellationToken cancellationTokens)
     {
         await Task.Delay(100, cancellationTokens);
 
-        if (id == Guid.Empty)
+        if (string.IsNullOrEmpty(query.Id) || string.IsNullOrEmpty(query.ThemeSlug))
         {
             return null;
         }
 
-        return new LegoSetDto(id, "Titanic", "Icons", 679.99m, 10294, 18, 15);
+        var legoSetCosmos = await legoSetDataStore.GetAsync(query.Id, query.ThemeSlug, cancellationTokens);
+
+        if (legoSetCosmos is null)
+        {
+            return null;
+        }
+
+        return new LegoSetDto(
+            legoSetCosmos.Id,
+            legoSetCosmos.Name,
+            legoSetCosmos.Theme,
+            legoSetCosmos.CatalogPrice,
+            legoSetCosmos.NumberOfPieces,
+            legoSetCosmos.AgeRestriction,
+            legoSetCosmos.AssemblyTimeInDays
+        );
     }
 }
