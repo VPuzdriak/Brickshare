@@ -15,7 +15,7 @@ public sealed class GetLegoSetScenarios(BrickShareFactory factory) : IClassFixtu
     {
         // Arrange
         const string legoSetName = "Titanic";
-        var legoSetId = await CreateLegoSet(legoSetName);
+        var legoSetId = await CreateLegoSetAsync(legoSetName);
 
         // Act
         var response = await _httpClient.GetAsync($"/lego-sets/{legoSetId}");
@@ -42,7 +42,7 @@ public sealed class GetLegoSetScenarios(BrickShareFactory factory) : IClassFixtu
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    private async Task<Guid> CreateLegoSet(
+    private async Task<Guid> CreateLegoSetAsync(
         string name = "LEGO Star Wars Millennium Falcon",
         decimal catalogPrice = 679.99m,
         int numberOfPieces = 10294,

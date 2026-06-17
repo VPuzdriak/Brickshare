@@ -23,6 +23,8 @@ internal sealed class CreateLegoSetHandler
             AssemblyTimeInDays = command.AssemblyTimeInDays,
             NumberOfPieces = command.NumberOfPieces
         };
+     
+        await Task.Delay(100, cancellationToken);
         
         return legoSet.Guid;
     }
