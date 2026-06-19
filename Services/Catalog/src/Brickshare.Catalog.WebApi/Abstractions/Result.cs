@@ -34,4 +34,4 @@ public sealed record Result<T>
 
 public struct Empty;
 
-public sealed record Failure(string Code, string Message);
+public record Failure(string Code, string Message);
