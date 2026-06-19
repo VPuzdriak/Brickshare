@@ -12,7 +12,7 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
     private readonly HttpClient _httpClient = factory.CreateClient();
 
     [Fact]
-    public async Task UpdateLegoSet_ShouldUpdateAndReturnNoContent_WhenExists()
+    public async Task UpdateLegoSet_ShouldUpdateAndReturnOk_WhenExists()
     {
         // Arrange
         var createLegoSetResult = await CreateLegoSetAsync();
@@ -34,8 +34,12 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
             );
         response.EnsureSuccessStatusCode();
 
+        var result = await response.Content.ReadFromJsonAsync<UpdateLegoSetResult>();
+        ArgumentNullException.ThrowIfNull(result);
+
         // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        result.Id.ShouldBe(createLegoSetResult.Id);
     }
 
     [Fact]

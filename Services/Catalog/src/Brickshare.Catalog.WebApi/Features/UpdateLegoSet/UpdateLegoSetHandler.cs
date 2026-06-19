@@ -24,7 +24,7 @@ internal sealed class UpdateLegoSetHandler(ILegoSetDataStore legoSetDataStore)
         var existingSet = await legoSetDataStore.GetAsync(command.Id, command.ThemeSlug, cancellationToken);
         if (existingSet is null)
         {
-            return new LegoSetNotFound();
+            return new LegoSetNotFound(command.Id, command.ThemeSlug);
         }
 
         var legoSet = new LegoSet

@@ -36,13 +36,13 @@ internal static class UpdateLegoSetEndpoint
 
                 if (result.Success)
                 {
-                    return Results.NoContent();
+                    return Results.Ok(result.Data);
                 }
 
                 return result.Error switch
                 {
                     LegoSetNotFound notFound => Results.NotFound(notFound),
-                    _ => Results.Problem(result.Error.Message)
+                    _ => Results.Problem(title: result.Error.Code, detail: result.Error.Message)
                 };
             })
             .WithName("UpdateLegoSet");

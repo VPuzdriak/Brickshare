@@ -29,11 +29,16 @@ internal static class CreateLegoSetEndpoint
 
                 var result = await handler.HandleAsync(command, ct);
 
-                return Results.CreatedAtRoute(
-                    "GetLegoSet",
-                    new { id = result.Id, themeSlug = result.ThemeSlug },
-                    result
-                );
+                if (result.Success)
+                {
+                    return Results.CreatedAtRoute(
+                        "GetLegoSet",
+                        new { id = result.Data.Id, themeSlug = result.Data.ThemeSlug },
+                        result.Data
+                    );
+                }
+
+                return Results.Problem(title: result.Error.Code, detail: result.Error.Message);
             })
             .WithName("CreateLegoSet");
 
