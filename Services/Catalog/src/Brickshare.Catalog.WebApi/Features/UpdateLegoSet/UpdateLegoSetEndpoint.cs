@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Brickshare.Catalog.WebApi.Features.Shared;
 
 namespace Brickshare.Catalog.WebApi.Features.UpdateLegoSet;
 
@@ -23,6 +24,7 @@ internal static class UpdateLegoSetEndpoint
             {
                 var command = new UpdateLegoSet(
                     id,
+                    themeSlug,
                     updateLegoSetRequest.Name,
                     updateLegoSetRequest.Theme,
                     updateLegoSetRequest.CatalogPrice,
@@ -34,13 +36,13 @@ internal static class UpdateLegoSetEndpoint
 
                 if (result.Success)
                 {
-                    return Results.NoContent();
+                    return Results.Ok(result.Data);
                 }
 
-                return result.Error.Code switch
+                return result.Error switch
                 {
-                    "SET_NOT_FOUND" => Results.NotFound(result.Error),
-                    _ => Results.Problem(result.Error.Message)
+                    LegoSetNotFound notFound => Results.NotFound(notFound),
+                    _ => Results.Problem(title: result.Error.Code, detail: result.Error.Message)
                 };
             })
             .WithName("UpdateLegoSet");

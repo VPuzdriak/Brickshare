@@ -1,3 +1,4 @@
+using Brickshare.Catalog.WebApi.Abstractions;
 using Brickshare.Catalog.WebApi.Entities;
 using Brickshare.Catalog.WebApi.Infrastructure;
 
@@ -14,7 +15,9 @@ internal sealed record CreateLegoSet(
 
 internal sealed class CreateLegoSetHandler(ILegoSetDataStore legoSetDataStore)
 {
-    public async Task<CreateLegoSetResult> HandleAsync(CreateLegoSet command, CancellationToken cancellationToken)
+    public async Task<Result<CreateLegoSetResult>> HandleAsync(
+        CreateLegoSet command,
+        CancellationToken cancellationToken)
     {
         var legoSet = new LegoSet
         {

@@ -1,10 +1,13 @@
 using Brickshare.Catalog.WebApi.Abstractions;
 using Brickshare.Catalog.WebApi.Entities;
+using Brickshare.Catalog.WebApi.Features.Shared;
+using Brickshare.Catalog.WebApi.Infrastructure;
 
 namespace Brickshare.Catalog.WebApi.Features.UpdateLegoSet;
 
 internal sealed record UpdateLegoSet(
     string Id,
+    string ThemeSlug,
     string Name,
     string Theme,
     decimal CatalogPrice,
@@ -12,16 +15,16 @@ internal sealed record UpdateLegoSet(
     int AgeRestriction,
     int AssemblyTimeInDays);
 
-internal sealed class UpdateLegoSetHandler
+internal sealed class UpdateLegoSetHandler(ILegoSetDataStore legoSetDataStore)
 {
-    public async Task<Result<Empty>> HandleAsync(UpdateLegoSet command, CancellationToken cancellationToken)
+    public async Task<Result<UpdateLegoSetResult>> HandleAsync(
+        UpdateLegoSet command,
+        CancellationToken cancellationToken)
     {
-        // Simulation of waiting to get the set from DB
-        await Task.Delay(100, cancellationToken);
-
-        if (string.IsNullOrEmpty(command.Id))
+        var existingSet = await legoSetDataStore.GetAsync(command.Id, command.ThemeSlug, cancellationToken);
+        if (existingSet is null)
         {
-            return new Failure("SET_NOT_FOUND", "Lego set not found");
+            return new LegoSetNotFound(command.Id, command.ThemeSlug);
         }
 
         var legoSet = new LegoSet
@@ -35,9 +38,8 @@ internal sealed class UpdateLegoSetHandler
             NumberOfPieces = command.NumberOfPieces
         };
 
-        // Simulation of saving changes
-        await Task.Delay(100, cancellationToken);
+        var legoSetCosmos = await legoSetDataStore.ReplaceAsync(legoSet, command.ThemeSlug, cancellationToken);
 
-        return Result.Empty;
+        return new UpdateLegoSetResult(legoSetCosmos.Id, legoSetCosmos.ThemeSlug);
     }
 }

@@ -1,5 +1,4 @@
 using Brickshare.Catalog.WebApi.Infrastructure;
-using Brickshare.Catalog.WebApi.Infrastructure.Extensions;
 
 namespace Brickshare.Catalog.WebApi.Features.GetLegoSet;
 

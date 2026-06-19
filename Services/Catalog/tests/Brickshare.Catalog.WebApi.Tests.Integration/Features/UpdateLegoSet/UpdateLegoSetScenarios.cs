@@ -12,7 +12,7 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
     private readonly HttpClient _httpClient = factory.CreateClient();
 
     [Fact]
-    public async Task UpdateLegoSet_ShouldUpdateAndReturnNoContent_WhenExists()
+    public async Task UpdateLegoSet_ShouldUpdateAndReturnOk_WhenExists()
     {
         // Arrange
         var createLegoSetResult = await CreateLegoSetAsync();
@@ -34,16 +34,20 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
             );
         response.EnsureSuccessStatusCode();
 
+        var result = await response.Content.ReadFromJsonAsync<UpdateLegoSetResult>();
+        ArgumentNullException.ThrowIfNull(result);
+
         // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        result.Id.ShouldBe(createLegoSetResult.Id);
     }
 
     [Fact]
     public async Task UpdateLegoSet_ShouldReturnNotFound_WhenNotExists()
     {
         // Arrange
-        var nonExistingLegoSetId = string.Empty;
-        var legoSetTheme = "Technic";
+        var nonExistingLegoSetId = "ca211935-3bfa-4a73-8e2b-7f2cd3637f50";
+        var themeSlug = "technic";
         var request = new UpdateLegoSetRequest(
             Name: "LEGO Star Wars Millennium Falcon",
             Theme: "Star Wars",
@@ -53,7 +57,7 @@ public sealed class UpdateLegoSetScenarios(BrickShareFactory factory) : IClassFi
             AssemblyTimeInDays: 15);
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"/lego-sets/{nonExistingLegoSetId}/{legoSetTheme}", request);
+        var response = await _httpClient.PutAsJsonAsync($"/lego-sets/{nonExistingLegoSetId}/{themeSlug}", request);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
