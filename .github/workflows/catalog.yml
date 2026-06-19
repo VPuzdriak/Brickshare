@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Development
+    env:
+        CosmosDb__ConnectionString: ${{ secrets.COSMOSDB_CONNECTIONSTRING }}
     defaults:
       run:
         working-directory: Services/Catalog

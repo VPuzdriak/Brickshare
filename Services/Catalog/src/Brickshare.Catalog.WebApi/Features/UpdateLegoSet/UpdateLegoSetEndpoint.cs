@@ -4,6 +4,7 @@ namespace Brickshare.Catalog.WebApi.Features.UpdateLegoSet;
 
 public sealed record UpdateLegoSetRequest(
     [Required] string Name,
+    [Required] string Theme,
     [Required, Range(10, 2_000)] decimal CatalogPrice,
     [Required, Range(12, 13_000)] int NumberOfPieces,
     [Required, Range(4, 99)] int AgeRestriction,
@@ -13,8 +14,9 @@ internal static class UpdateLegoSetEndpoint
 {
     public static IEndpointRouteBuilder MapUpdateLegoSet(this IEndpointRouteBuilder builder)
     {
-        builder.MapPut("/{id:guid}", async (
-                Guid id,
+        builder.MapPut("/{id}/{themeSlug}", async (
+                string id,
+                string themeSlug,
                 UpdateLegoSetRequest updateLegoSetRequest,
                 UpdateLegoSetHandler handler,
                 CancellationToken ct) =>
@@ -22,6 +24,7 @@ internal static class UpdateLegoSetEndpoint
                 var command = new UpdateLegoSet(
                     id,
                     updateLegoSetRequest.Name,
+                    updateLegoSetRequest.Theme,
                     updateLegoSetRequest.CatalogPrice,
                     updateLegoSetRequest.NumberOfPieces,
                     updateLegoSetRequest.AgeRestriction,

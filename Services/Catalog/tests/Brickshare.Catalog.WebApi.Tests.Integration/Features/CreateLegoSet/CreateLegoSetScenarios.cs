@@ -15,6 +15,7 @@ public sealed class CreateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         // Arrange
         var request = new CreateLegoSetRequest(
             Name: "LEGO Star Wars Millennium Falcon",
+            Theme: "Star Wars",
             CatalogPrice: 679.99m,
             NumberOfPieces: 10294,
             AgeRestriction: 18,
@@ -25,13 +26,14 @@ public sealed class CreateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
         response.EnsureSuccessStatusCode();
 
-        var legoSetId = await response.Content.ReadFromJsonAsync<Guid>();
+        var result = await response.Content.ReadFromJsonAsync<CreateLegoSetResult>();
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        result.ShouldNotBeNull();
         ArgumentNullException.ThrowIfNull(response.Headers.Location);
-        response.Headers.Location.ShouldBe(new Uri(_httpClient.BaseAddress!, $"lego-sets/{legoSetId}"));
-        legoSetId.ShouldNotBe(Guid.Empty);
+        response.Headers.Location.ShouldBe(
+            new Uri(_httpClient.BaseAddress!, $"lego-sets/{result.Id}/{result.ThemeSlug}"));
     }
 
     [Fact]
@@ -40,6 +42,7 @@ public sealed class CreateLegoSetScenarios(BrickShareFactory factory) : IClassFi
         // Arrange
         var request = new CreateLegoSetRequest(
             Name: "", // Invalid: Name is required
+            Theme: "", // Invalid: Theme is required
             CatalogPrice: -10.00m, // Invalid: Price cannot be negative
             NumberOfPieces: 0, // Invalid: Number of pieces must be greater than 0
             AgeRestriction: -1, // Invalid: Age restriction cannot be negative
@@ -48,7 +51,6 @@ public sealed class CreateLegoSetScenarios(BrickShareFactory factory) : IClassFi
 
         // Act
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
-        var responseBody =  await response.Content.ReadAsStringAsync();
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);

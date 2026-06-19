@@ -15,17 +15,18 @@ public sealed class GetLegoSetScenarios(BrickShareFactory factory) : IClassFixtu
     {
         // Arrange
         const string legoSetName = "Titanic";
-        var legoSetId = await CreateLegoSetAsync(legoSetName);
+        var createLegoSetResult = await CreateLegoSetAsync(legoSetName);
 
         // Act
-        var response = await _httpClient.GetAsync($"/lego-sets/{legoSetId}");
+        var response =
+            await _httpClient.GetAsync($"/lego-sets/{createLegoSetResult.Id}/{createLegoSetResult.ThemeSlug}");
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadFromJsonAsync<GetLegoSetResponse>();
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         responseBody.ShouldNotBeNull();
-        responseBody.Id.ShouldBe(legoSetId);
+        responseBody.Id.ShouldBe(createLegoSetResult.Id);
         responseBody.Name.ShouldBe(legoSetName);
     }
 
@@ -33,25 +34,38 @@ public sealed class GetLegoSetScenarios(BrickShareFactory factory) : IClassFixtu
     public async Task GetLegoSet_ShouldReturnNotFound_WhenSetDoesNotExist()
     {
         // Arrange
-        var nonExistingLegoSetId = Guid.Empty;
-        
+        var nonExistingLegoSetId = "abc123";
+        var legoSetThemeSlug = "titanic";
+
         // Act
-        var response = await _httpClient.GetAsync($"/lego-sets/{nonExistingLegoSetId}");
-        
+        var response = await _httpClient.GetAsync($"/lego-sets/{nonExistingLegoSetId}/{legoSetThemeSlug}");
+
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    private async Task<Guid> CreateLegoSetAsync(
+    private async Task<CreateLegoSetResult> CreateLegoSetAsync(
         string name = "LEGO Star Wars Millennium Falcon",
+        string theme = "Star Wars",
         decimal catalogPrice = 679.99m,
         int numberOfPieces = 10294,
         int ageRestriction = 18,
         int assemblyTimeInDays = 15)
     {
-        var request = new CreateLegoSetRequest(name, catalogPrice, numberOfPieces, ageRestriction, assemblyTimeInDays);
+        var request = new CreateLegoSetRequest(
+            name,
+            theme,
+            catalogPrice,
+            numberOfPieces,
+            ageRestriction,
+            assemblyTimeInDays);
+
         var response = await _httpClient.PostAsJsonAsync("/lego-sets", request);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<Guid>();
+
+        var result = await response.Content.ReadFromJsonAsync<CreateLegoSetResult>();
+        ArgumentNullException.ThrowIfNull(result);
+
+        return result;
     }
 }
